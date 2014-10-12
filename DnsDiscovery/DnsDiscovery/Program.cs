@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using DnsDiscovery.Parser;
 using DnsDiscovery.Properties;
 using GemsCLI;
 using GemsCLI.Descriptions;
-using GemsCLI.Help;
+using GemsCLI.Helper;
 using GemsCLI.Output;
 
 namespace DnsDiscovery
@@ -19,7 +21,10 @@ namespace DnsDiscovery
         /// <param name="pArgs">The arguments from the command line.</param>
         private static void Main(string[] pArgs)
         {
-            WriteGreeting();
+            ConsoleFactory consoleFactory = new ConsoleFactory();
+            iOutputStream outS = consoleFactory.Create();
+
+            WriteGreeting(outS);
 
             CliOptions options = CliOptions.WindowsStyle;
 
@@ -27,8 +32,6 @@ namespace DnsDiscovery
                 options, new HelpResource(Help.ResourceManager),
                 "[/domains:string] [/limit:int] pattern"
                 );
-
-            ConsoleFactory consoleFactory = new ConsoleFactory();
 
             if (pArgs.Length == 0)
             {
@@ -43,25 +46,27 @@ namespace DnsDiscovery
                                            from domain in getPattern(req)
                                            let str = string.Format("{0}.{1}", domain, topLevel)
                                            select str).Distinct();
+
             foreach (string domain in setLimit(req, domains))
             {
-                Debug.WriteLine(domain);
+                outS.Standard(domain);
             }
         }
 
         /// <summary>
         /// Displays program greeting.
         /// </summary>
-        private static void WriteGreeting()
+        /// <param name="pOutS"></param>
+        private static void WriteGreeting(iOutputStream pOutS)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
 
-            Console.WriteLine(Resource.Greeting_Version, version);
-            Console.WriteLine(Resource.Greeting_Company);
-            Console.WriteLine(Resource.Greeting_Contact);
-            Console.WriteLine("");
+            pOutS.Standard(string.Format(Resource.Greeting_Version, version));
+            pOutS.Standard(Resource.Greeting_Company);
+            pOutS.Standard(Resource.Greeting_Contact);
+            pOutS.Standard("");
         }
 
         /// <summary>
@@ -81,7 +86,10 @@ namespace DnsDiscovery
         private static IEnumerable<string> getPattern(Request pReq)
         {
             string pattern = pReq.Get<string>("pattern");
-            return new[] {pattern};
+            Engine eng = new Engine();
+            return !eng.Compile(pattern) 
+                ? Enumerable.Empty<string>() 
+                : eng.Parse();
         }
 
         /// <summary>
