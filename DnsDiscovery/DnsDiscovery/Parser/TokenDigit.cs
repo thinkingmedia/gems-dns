@@ -2,7 +2,7 @@
 
 namespace DnsDiscovery.Parser
 {
-    public class TokenDigit : Token
+    public class TokenDigit : iToken
     {
         /// <summary>
         /// Numbers
@@ -12,7 +12,7 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// Gets a list of numbers
         /// </summary>
-        public override IEnumerable<string> GetValues()
+        public IEnumerable<string> GetValues()
         {
             return Nums;
         }

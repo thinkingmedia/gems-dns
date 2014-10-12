@@ -40,7 +40,11 @@ namespace DnsDiscovery
                 return;
             }
 
+
             Request req = RequestFactory.Create(options, pArgs, descs, consoleFactory);
+            string pattern = req.Get<string>("pattern");
+            outS.Standard(pattern);
+            outS.Standard("");
 
             IEnumerable<string> domains = (from topLevel in getDomains(req)
                                            from domain in getPattern(req)

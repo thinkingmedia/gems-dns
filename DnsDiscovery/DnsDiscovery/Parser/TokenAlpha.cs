@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DnsDiscovery.Parser
 {
-    public class TokenAlpha : Token
+    public class TokenAlpha : iToken
     {
         /// <summary>
         /// Alphabet 
@@ -13,7 +13,7 @@ namespace DnsDiscovery.Parser
         public static readonly string[] Alpha = Enumerable.Range('a', 'z' - 'a' + 1)
             .Select(pChar=>((Char)pChar).ToString(CultureInfo.InvariantCulture)).ToArray();
 
-        public override IEnumerable<string> GetValues()
+        public IEnumerable<string> GetValues()
         {
             return Alpha;
         }

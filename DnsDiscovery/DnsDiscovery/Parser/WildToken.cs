@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DnsDiscovery.Parser
 {
-    public class WildToken : Token
+    public class WildToken : iToken
     {
         /// <summary>
         /// All allowed characters.
@@ -13,7 +13,7 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// All allowed
         /// </summary>
-        public override IEnumerable<string> GetValues()
+        public IEnumerable<string> GetValues()
         {
             return _all;
         }

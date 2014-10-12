@@ -14,7 +14,7 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// The compiled pattern
         /// </summary>
-        private readonly List<Token> _tokens;
+        private readonly List<iToken> _tokens;
 
         /// <summary>
         /// Constructor
@@ -31,7 +31,7 @@ namespace DnsDiscovery.Parser
                                  };
 
             _r = new Regex(string.Join("|", rules), RegexOptions.IgnoreCase);
-            _tokens = new List<Token>();
+            _tokens = new List<iToken>();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace DnsDiscovery.Parser
             MatchCollection matches = _r.Matches(pPattern);
             foreach (Match match in matches)
             {
-                Token t;
+                iToken t;
                 if (match.Groups["number"].Success)
                 {
                     t = new TokenDigit();
@@ -59,7 +59,13 @@ namespace DnsDiscovery.Parser
                 }
                 else if (match.Groups["optional"].Success)
                 {
-                    t = new TokenStatic(match.Groups["optional"].Value);
+                    iToken prev = _tokens.LastOrDefault();
+                    if (prev == null)
+                    {
+                        continue;
+                    }
+                    _tokens.Remove(prev);
+                    t = new TokenOptional(prev);
                 }
                 else if (match.Groups["static"].Success)
                 {
