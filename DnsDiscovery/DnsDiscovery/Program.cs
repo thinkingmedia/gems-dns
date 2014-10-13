@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using DnsDiscovery.Parser;
@@ -28,7 +29,7 @@ namespace DnsDiscovery
 
             List<Description> descs = DescriptionFactory.Create(
                 options, new HelpResource(Help.ResourceManager),
-                "[/domains:string] [/limit:int] pattern"
+                "[/domains:string] [/limit:int] [/count] pattern"
                 );
 
             if (pArgs.Length == 0)
@@ -52,6 +53,12 @@ namespace DnsDiscovery
                                            from domain in getPattern(req)
                                            let str = string.Format("{0}.{1}", domain, topLevel)
                                            select str).Distinct();
+
+            if (req.Contains("count"))
+            {
+                outS.Standard(domains.Count().ToString(CultureInfo.InvariantCulture));
+                return;
+            }
 
             foreach (string domain in setLimit(req, domains))
             {
@@ -82,7 +89,7 @@ namespace DnsDiscovery
         {
             string domains = pReq.Contains("domains")
                 ? pReq.Get<string>("domains")
-                : "com,net";
+                : "com";
             return domains.Split(new[] {','}).Distinct();
         }
 

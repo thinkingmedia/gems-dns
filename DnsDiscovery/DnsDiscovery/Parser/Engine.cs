@@ -12,7 +12,7 @@ namespace DnsDiscovery.Parser
         public Engine(string pPattern)
         {
             Compiler c = new Compiler();
-            _gen = new Generator(c.Compile(pPattern));
+            _gen = new Generator(Compiler.Compile(pPattern));
         }
 
         /// <summary>

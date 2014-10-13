@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DnsDiscovery.Parser
@@ -38,8 +39,10 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// Compiles the pattern.
         /// </summary>
-        public IEnumerable<iToken> Compile(string pPattern)
+        public static IEnumerable<iToken> Compile(string pPattern)
         {
+            List<iToken> tokens = new List<iToken>();
+
             StringReader reader = new StringReader(pPattern);
             int c;
             while ((c = reader.Read()) != -1)
@@ -48,26 +51,36 @@ namespace DnsDiscovery.Parser
                 switch (s)
                 {
                     case "#":
-                        yield return new TokenDigit();
+                        tokens.Add(new TokenDigit());
                         break;
                     case "@":
-                        yield return new TokenAlpha();
+                        tokens.Add(new TokenAlpha());
                         break;
                     case "*":
-                        yield return new TokenWild();
+                        tokens.Add(new TokenWild());
                         break;
                     case "|":
-                        yield return new TokenOr();
+                        tokens.Add(new TokenOr());
                         break;
                     case "(":
-                        string g = ReadGroup(reader);
-                        yield return new TokenGroup(g);
+                        tokens.Add(new TokenGroup(ReadGroup(reader)));
+                        break;
+                    case "?":
+                        iToken prev = tokens.LastOrDefault();
+                        if (prev == null)
+                        {
+                            continue;
+                        }
+                        tokens.Remove(prev);
+                        tokens.Add(new TokenOptional(prev));
                         break;
                     default:
-                        yield return new TokenStatic(s);
+                        tokens.Add(new TokenStatic(s));
                         break;
                 }
             }
+
+            return tokens;
         }
     }
 }

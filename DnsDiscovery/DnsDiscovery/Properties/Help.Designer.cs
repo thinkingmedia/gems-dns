@@ -61,6 +61,15 @@ namespace DnsDiscovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shows the total number of domains the pattern produces..
+        /// </summary>
+        internal static string count {
+            get {
+                return ResourceManager.GetString("count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A comma delimited list of top level regitry domains to check..
         /// </summary>
         internal static string domains {
