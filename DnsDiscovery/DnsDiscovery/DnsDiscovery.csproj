@@ -41,10 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parser\Compiler.cs" />
+    <Compile Include="Parser\Generator.cs" />
     <Compile Include="Parser\TokenAlpha.cs" />
     <Compile Include="Parser\TokenDigit.cs" />
     <Compile Include="Parser\Engine.cs" />
+    <Compile Include="Parser\TokenGroup.cs" />
     <Compile Include="Parser\TokenOptional.cs" />
+    <Compile Include="Parser\TokenOr.cs" />
     <Compile Include="Parser\TokenStatic.cs" />
     <Compile Include="Parser\iToken.cs" />
     <Compile Include="Parser\WildToken.cs" />

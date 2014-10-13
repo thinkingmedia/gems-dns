@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -40,8 +38,12 @@ namespace DnsDiscovery
                 return;
             }
 
-
             Request req = RequestFactory.Create(options, pArgs, descs, consoleFactory);
+            if (!req.Valid)
+            {
+                return;
+            }
+
             string pattern = req.Get<string>("pattern");
             outS.Standard(pattern);
             outS.Standard("");
@@ -90,10 +92,8 @@ namespace DnsDiscovery
         private static IEnumerable<string> getPattern(Request pReq)
         {
             string pattern = pReq.Get<string>("pattern");
-            Engine eng = new Engine();
-            return !eng.Compile(pattern) 
-                ? Enumerable.Empty<string>() 
-                : eng.Parse();
+            Engine eng = new Engine(pattern.Replace(" ", ""));
+            return eng.Parse();
         }
 
         /// <summary>
