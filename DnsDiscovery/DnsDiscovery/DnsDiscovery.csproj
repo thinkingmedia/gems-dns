@@ -49,6 +49,7 @@
     <Compile Include="Parser\TokenGroup.cs" />
     <Compile Include="Parser\TokenOptional.cs" />
     <Compile Include="Parser\TokenOr.cs" />
+    <Compile Include="Parser\TokenSet.cs" />
     <Compile Include="Parser\TokenStatic.cs" />
     <Compile Include="Parser\iToken.cs" />
     <Compile Include="Parser\TokenWild.cs" />

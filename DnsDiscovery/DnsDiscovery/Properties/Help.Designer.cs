@@ -97,6 +97,24 @@ namespace DnsDiscovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exclude domains that are longer than the max..
+        /// </summary>
+        internal static string max {
+            get {
+                return ResourceManager.GetString("max", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exclude domains that are shorter than the min..
+        /// </summary>
+        internal static string min {
+            get {
+                return ResourceManager.GetString("min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Domain name expression to iterate..
         /// </summary>
         internal static string pattern {

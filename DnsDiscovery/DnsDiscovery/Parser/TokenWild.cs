@@ -8,14 +8,14 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// All allowed characters.
         /// </summary>
-        private static readonly string[] _all = TokenAlpha.Alpha.Concat(TokenDigit.Nums.Concat(new[] {"-"})).ToArray();
+        public static readonly string[] All = TokenAlpha.Alpha.Concat(TokenDigit.Nums.Concat(new[] {"-"})).ToArray();
 
         /// <summary>
         /// All allowed
         /// </summary>
         public IEnumerable<string> GetValues()
         {
-            return _all;
+            return All;
         }
     }
 }

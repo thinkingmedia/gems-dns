@@ -36,6 +36,22 @@ namespace DnsDiscovery.Parser
             return sb.ToString();
         }
 
+        private static string ReadSet(TextReader pReader)
+        {
+            StringBuilder sb = new StringBuilder();
+            int c;
+            while ((c = pReader.Read()) != -1)
+            {
+                string s = ((char)c).ToString(CultureInfo.InvariantCulture);
+                if (s == "]")
+                {
+                    break;
+                }
+                sb.Append(s);
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Compiles the pattern.
         /// </summary>
@@ -65,6 +81,9 @@ namespace DnsDiscovery.Parser
                     case "(":
                         tokens.Add(new TokenGroup(ReadGroup(reader)));
                         break;
+                    case "[":
+                        tokens.Add(new TokenSet(ReadSet(reader)));
+                        break;
                     case "?":
                         iToken prev = tokens.LastOrDefault();
                         if (prev == null)
@@ -75,7 +94,11 @@ namespace DnsDiscovery.Parser
                         tokens.Add(new TokenOptional(prev));
                         break;
                     default:
-                        tokens.Add(new TokenStatic(s));
+                        if (TokenWild.All.Contains(s)
+                            || s == ".")
+                        {
+                            tokens.Add(new TokenStatic(s));
+                        }
                         break;
                 }
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -14,6 +15,16 @@ namespace DnsDiscovery
 {
     internal static class Program
     {
+        private const int _MAX_LENGTH = 253;
+
+        /// <summary>
+        /// Returns TRUE if any sub-domain part is to long.
+        /// </summary>
+        private static bool AnyLabelTooLong(string pDomain, int pMax)
+        {
+            return pDomain.Split(new[] {'.'}).Any(pLabel=>pLabel.Length > pMax);
+        }
+
         /// <summary>
         /// Entry
         /// </summary>
@@ -29,7 +40,7 @@ namespace DnsDiscovery
 
             List<Description> descs = DescriptionFactory.Create(
                 options, new HelpResource(Help.ResourceManager),
-                "[/domains:string] [/limit:int] [/count] [/sort:string] [/desc] pattern"
+                "[/domains:string] [/limit:int] [/count] [/sort:string] [/desc] [/max:int] [/min:int] pattern"
                 );
 
             if (pArgs.Length == 0)
@@ -49,9 +60,18 @@ namespace DnsDiscovery
             outS.Standard(pattern);
             outS.Standard("");
 
-            IEnumerable<string> domains = (from topLevel in getDomains(req)
+            int max = req.Contains("max") ? Math.Min(req.Get<int>("max"), _MAX_LENGTH) :_MAX_LENGTH;
+            int min = req.Contains("min") ? Math.Max(req.Get<int>("min"), 1) : 1;
+
+            IEnumerable<string> domains = (from topLevel in getTopLevel(req)
                                            from domain in getPattern(req)
+                                           where !domain.StartsWith("-")
+                                                 && !domain.EndsWith("-")
+                                                 && domain.Length <= max
+                                                 && domain.Length >= min
                                            let str = string.Format("{0}.{1}", domain, topLevel)
+                                           where str.Length <= _MAX_LENGTH
+                                                 && !AnyLabelTooLong(domain, 63)
                                            select str).Distinct();
 
             if (req.Contains("count"))
@@ -63,9 +83,9 @@ namespace DnsDiscovery
             if (req.Contains("sort"))
             {
                 string sort = req.Get<string>("sort").ToLower();
-                domains = sort == "width" 
-                    ? domains.OrderBy(pDomain=>pDomain.Length) 
-                    : domains.OrderBy(pDomain => pDomain);
+                domains = sort == "width"
+                    ? domains.OrderBy(pDomain=>pDomain.Length)
+                    : domains.OrderBy(pDomain=>pDomain);
 
                 if (req.Contains("desc"))
                 {
@@ -98,7 +118,7 @@ namespace DnsDiscovery
         /// <summary>
         /// Generates a list of top-level registry domains.
         /// </summary>
-        private static IEnumerable<string> getDomains(Request pReq)
+        private static IEnumerable<string> getTopLevel(Request pReq)
         {
             string domains = pReq.Contains("domains")
                 ? pReq.Get<string>("domains")

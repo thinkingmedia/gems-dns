@@ -129,6 +129,12 @@
   <data name="limit" xml:space="preserve">
     <value>Stop iteration after these many checks.</value>
   </data>
+  <data name="max" xml:space="preserve">
+    <value>Exclude domains that are longer than the max.</value>
+  </data>
+  <data name="min" xml:space="preserve">
+    <value>Exclude domains that are shorter than the min.</value>
+  </data>
   <data name="pattern" xml:space="preserve">
     <value>Domain name expression to iterate.</value>
   </data>
