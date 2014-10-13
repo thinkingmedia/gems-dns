@@ -120,6 +120,9 @@
   <data name="count" xml:space="preserve">
     <value>Shows the total number of domains the pattern produces.</value>
   </data>
+  <data name="desc" xml:space="preserve">
+    <value>Reverse the direction of the sort.</value>
+  </data>
   <data name="domains" xml:space="preserve">
     <value>A comma delimited list of top level regitry domains to check.</value>
   </data>
@@ -128,5 +131,8 @@
   </data>
   <data name="pattern" xml:space="preserve">
     <value>Domain name expression to iterate.</value>
+  </data>
+  <data name="sort" xml:space="preserve">
+    <value>"alpha" to sort alphabetically and "width" to sort by number of characters.</value>
   </data>
 </root>

@@ -29,7 +29,7 @@ namespace DnsDiscovery
 
             List<Description> descs = DescriptionFactory.Create(
                 options, new HelpResource(Help.ResourceManager),
-                "[/domains:string] [/limit:int] [/count] pattern"
+                "[/domains:string] [/limit:int] [/count] [/sort:string] [/desc] pattern"
                 );
 
             if (pArgs.Length == 0)
@@ -58,6 +58,19 @@ namespace DnsDiscovery
             {
                 outS.Standard(domains.Count().ToString(CultureInfo.InvariantCulture));
                 return;
+            }
+
+            if (req.Contains("sort"))
+            {
+                string sort = req.Get<string>("sort").ToLower();
+                domains = sort == "width" 
+                    ? domains.OrderBy(pDomain=>pDomain.Length) 
+                    : domains.OrderBy(pDomain => pDomain);
+
+                if (req.Contains("desc"))
+                {
+                    domains = domains.Reverse();
+                }
             }
 
             foreach (string domain in setLimit(req, domains))

@@ -70,6 +70,15 @@ namespace DnsDiscovery.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reverse the direction of the sort..
+        /// </summary>
+        internal static string desc {
+            get {
+                return ResourceManager.GetString("desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A comma delimited list of top level regitry domains to check..
         /// </summary>
         internal static string domains {
@@ -93,6 +102,15 @@ namespace DnsDiscovery.Properties {
         internal static string pattern {
             get {
                 return ResourceManager.GetString("pattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;alpha&quot; to sort alphabetically and &quot;width&quot; to sort by number of characters..
+        /// </summary>
+        internal static string sort {
+            get {
+                return ResourceManager.GetString("sort", resourceCulture);
             }
         }
     }
