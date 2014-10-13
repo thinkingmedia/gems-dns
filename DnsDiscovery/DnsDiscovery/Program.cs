@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using DnsDiscovery.Parser;
 using DnsDiscovery.Properties;
@@ -95,8 +96,24 @@ namespace DnsDiscovery
 
             foreach (string domain in setLimit(req, domains))
             {
-                outS.Standard(domain);
+                if (isFree(domain))
+                {
+                    outS.Standard(domain);
+                }
             }
+        }
+
+        private static bool isFree(string pDomain)
+        {
+            try
+            {
+                IPHostEntry entry = Dns.GetHostEntry(pDomain);
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
