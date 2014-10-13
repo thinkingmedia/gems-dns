@@ -1,33 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace DnsDiscovery.Parser
 {
     public class Compiler
     {
         /// <summary>
-        /// The regex used to compile the pattern
+        /// Reads the contents between two braces. Skip an inner braces.
         /// </summary>
-        private readonly Regex _r;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public Compiler()
+        private static string ReadGroup(TextReader pReader)
         {
-            List<string> rules = new List<string>
-                                 {
-                                     @"(?<number>#)",
-                                     @"(?<alpha>@)",
-                                     @"(?<wild>\*)",
-                                     @"(?<optional>\?)",
-                                     @"(?<group>\([^\)]*\))",
-                                     @"(?<or>\|)",
-                                     @"(?<static>.)"
-                                 };
-
-            _r = new Regex(string.Join("|", rules), RegexOptions.IgnoreCase);
+            StringBuilder sb = new StringBuilder();
+            int o = 1;
+            int c;
+            while ((c = pReader.Read()) != -1)
+            {
+                string s = ((char)c).ToString(CultureInfo.InvariantCulture);
+                if (s == "(")
+                {
+                    o++;
+                }
+                if (s == ")")
+                {
+                    o--;
+                    if (o == 0)
+                    {
+                        break;
+                    }
+                }
+                sb.Append(s);
+            }
+            return sb.ToString();
         }
 
         /// <summary>
@@ -35,57 +40,34 @@ namespace DnsDiscovery.Parser
         /// </summary>
         public IEnumerable<iToken> Compile(string pPattern)
         {
-            IList<iToken> tokens = new List<iToken>();
-
-            MatchCollection matches = _r.Matches(pPattern);
-            foreach (Match match in matches)
+            StringReader reader = new StringReader(pPattern);
+            int c;
+            while ((c = reader.Read()) != -1)
             {
-                iToken t;
-
-                if (match.Groups["number"].Success)
+                string s = ((char)c).ToString(CultureInfo.InvariantCulture);
+                switch (s)
                 {
-                    t = new TokenDigit();
+                    case "#":
+                        yield return new TokenDigit();
+                        break;
+                    case "@":
+                        yield return new TokenAlpha();
+                        break;
+                    case "*":
+                        yield return new TokenWild();
+                        break;
+                    case "|":
+                        yield return new TokenOr();
+                        break;
+                    case "(":
+                        string g = ReadGroup(reader);
+                        yield return new TokenGroup(g);
+                        break;
+                    default:
+                        yield return new TokenStatic(s);
+                        break;
                 }
-                else if (match.Groups["alpha"].Success)
-                {
-                    t = new TokenAlpha();
-                }
-                else if (match.Groups["wild"].Success)
-                {
-                    t = new WildToken();
-                }
-                else if (match.Groups["optional"].Success)
-                {
-                    iToken prev = tokens.LastOrDefault();
-                    if (prev == null)
-                    {
-                        continue;
-                    }
-                    tokens.Remove(prev);
-                    t = new TokenOptional(prev);
-                }
-                else if (match.Groups["group"].Success)
-                {
-                    string group = match.Groups["group"].Value;
-                    t = new TokenGroup(group.Substring(1, group.Length - 2));
-                }
-                else if (match.Groups["or"].Success)
-                {
-                    t = new TokenOr();
-                }
-                else if (match.Groups["static"].Success)
-                {
-                    t = new TokenStatic(match.Groups["static"].Value);
-                }
-                else
-                {
-                    continue;
-                }
-
-                tokens.Add(t);
             }
-
-            return tokens;
         }
     }
 }

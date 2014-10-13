@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DnsDiscovery.Parser
 {
-    public class WildToken : iToken
+    public class TokenWild : iToken
     {
         /// <summary>
         /// All allowed characters.

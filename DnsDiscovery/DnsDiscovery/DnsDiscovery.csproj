@@ -51,7 +51,7 @@
     <Compile Include="Parser\TokenOr.cs" />
     <Compile Include="Parser\TokenStatic.cs" />
     <Compile Include="Parser\iToken.cs" />
-    <Compile Include="Parser\WildToken.cs" />
+    <Compile Include="Parser\TokenWild.cs" />
     <Compile Include="Properties\Help.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
