@@ -8,7 +8,7 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// The tokens
         /// </summary>
-        private readonly IList<iToken> _tokens;
+        private readonly iToken[] _tokens;
 
         /// <summary>
         /// Joins two collections together.
@@ -25,7 +25,7 @@ namespace DnsDiscovery.Parser
         /// </summary>
         private IEnumerable<string> Walk(int pIndex = 0)
         {
-            if (pIndex == _tokens.Count - 1)
+            if (pIndex == _tokens.Length - 1)
             {
                 return _tokens[pIndex].GetValues();
             }
@@ -38,9 +38,9 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// Constructor
         /// </summary>
-        public Generator(IList<iToken> pTokens)
+        public Generator(IEnumerable<iToken> pTokens)
         {
-            _tokens = pTokens;
+            _tokens = pTokens.ToArray();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace DnsDiscovery.Parser
         /// </summary>
         public IEnumerable<string> Generate()
         {
-            return _tokens.Count == 0
+            return _tokens.Length == 0
                 ? Enumerable.Empty<string>()
                 : Walk();
         }

@@ -36,7 +36,7 @@ namespace DnsDiscovery.Parser
         public TokenGroup(string pPattern)
         {
             Compiler c = new Compiler();
-            IList<iToken> tokens = c.Compile(pPattern);
+            IEnumerable<iToken> tokens = c.Compile(pPattern);
 
             _generators = CountGroups(tokens)
                 .GroupBy(pPair=>pPair.Value)

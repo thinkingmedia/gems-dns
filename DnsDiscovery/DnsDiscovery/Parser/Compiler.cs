@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DnsDiscovery.Parser
 {
@@ -36,7 +33,7 @@ namespace DnsDiscovery.Parser
         /// <summary>
         /// Compiles the pattern.
         /// </summary>
-        public IList<iToken> Compile(string pPattern)
+        public IEnumerable<iToken> Compile(string pPattern)
         {
             IList<iToken> tokens = new List<iToken>();
 
